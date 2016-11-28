@@ -4,8 +4,8 @@ import sys
 
 def load_data(filepath):
     with open(filepath, 'r') as reader:
-        data = reader.read()
-    return json.loads(data)
+        raw_bars = reader.read()
+    return json.loads(raw_bars)
 
 
 def get_biggest_bar(data):
@@ -38,16 +38,16 @@ def get_closest_bar(data, longitude, latitude):
 
 
 if __name__ == '__main__':
-    data = load_data(input('Input path to json file: '))
-    biggest = get_biggest_bar(data)
+    bars = load_data(input('Input path to json file: '))
+    biggest = get_biggest_bar(bars)
     print('\nThe biggest bar is {0} with {1} seats. The address is:\n {2}\n'.format(biggest.get('Name'),
                                                                                     biggest.get('SeatsCount'),
                                                                                     biggest.get('Address')))
-    smallest = get_smallest_bar(data)
+    smallest = get_smallest_bar(bars)
     print('The smallest bar is {0} with {1} seats. The address is:\n {2}\n'.format(smallest.get('Name'),
                                                                                    smallest.get('SeatsCount'),
                                                                                    smallest.get('Address')))
     if len(sys.argv) > 2:
-        closest = get_closest_bar(data, float(sys.argv[1]), float(sys.argv[2]))
+        closest = get_closest_bar(bars, float(sys.argv[1]), float(sys.argv[2]))
         print('The closest bar is {0}. The address is:\n {1}\n'.format(closest.get('Name'),
                                                                        closest.get('Address')))
