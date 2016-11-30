@@ -2,6 +2,14 @@ import json
 import sys
 
 
+def sort_bar_distance(bar, **kwargs):
+        bar_long = float(bar.get('Longitude_WGS84'))
+        bar_lat = float(bar.get('Latitude_WGS84'))
+
+        difference = abs(longitude - bar_long) + abs(latitude - bar_lat)
+        return difference
+
+
 def load_data(filepath):
     with open(filepath, 'r') as reader:
         raw_bars = reader.read()
@@ -11,29 +19,21 @@ def load_data(filepath):
 def get_biggest_bar(data):
     biggest = data[0]
     for bar in data[1:]:
-        if biggest.get('SeatsCount') < bar.get('SeatsCount'):
-            biggest = bar
+        biggest = max(biggest, bar, key=lambda x: x.get('SeatsCount'))
     return biggest
 
 
 def get_smallest_bar(data):
     smallest = data[0]
     for bar in data[1:]:
-        if smallest.get('SeatsCount') > bar.get('SeatsCount'):
-            smallest = bar
+        smallest = min(smallest, bar, key=lambda x: x.get('SeatsCount'))
     return smallest
 
 
 def get_closest_bar(data, longitude, latitude):
     closest = data[0]
-    smallest_difference = 999
     for bar in data[1:]:
-        bar_long = float(bar.get('Longitude_WGS84'))
-        bar_lat = float(bar.get('Latitude_WGS84'))
-        current_difference = abs(longitude - bar_long) + abs(latitude - bar_lat)
-        if current_difference < smallest_difference:
-            closest = bar
-            smallest_difference = current_difference
+        closest = min(closest, bar, key=sort_bar_distance)
     return closest
 
 
@@ -48,6 +48,8 @@ if __name__ == '__main__':
                                                                                    smallest.get('SeatsCount'),
                                                                                    smallest.get('Address')))
     if len(sys.argv) > 2:
-        closest = get_closest_bar(bars, float(sys.argv[1]), float(sys.argv[2]))
+        longitude = float(sys.argv[1])
+        latitude = float(sys.argv[2])
+        closest = get_closest_bar(bars, longitude, latitude)
         print('The closest bar is {0}. The address is:\n {1}\n'.format(closest.get('Name'),
                                                                        closest.get('Address')))
