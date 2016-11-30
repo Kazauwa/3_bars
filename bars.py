@@ -5,7 +5,6 @@ import sys
 def sort_bar_distance(bar, **kwargs):
         bar_long = float(bar.get('Longitude_WGS84'))
         bar_lat = float(bar.get('Latitude_WGS84'))
-
         difference = abs(longitude - bar_long) + abs(latitude - bar_lat)
         return difference
 
