@@ -2,7 +2,7 @@ import json
 import sys
 
 
-def sort_bar_distance(bar, **kwargs):
+def sort_bar_distance(bar):
         bar_long = float(bar.get('Longitude_WGS84'))
         bar_lat = float(bar.get('Latitude_WGS84'))
         difference = abs(longitude - bar_long) + abs(latitude - bar_lat)
@@ -16,24 +16,15 @@ def load_data(filepath):
 
 
 def get_biggest_bar(data):
-    biggest = data[0]
-    for bar in data[1:]:
-        biggest = max(biggest, bar, key=lambda x: x.get('SeatsCount'))
-    return biggest
+    return max(data, key=lambda x: x.get('SeatsCount'))
 
 
 def get_smallest_bar(data):
-    smallest = data[0]
-    for bar in data[1:]:
-        smallest = min(smallest, bar, key=lambda x: x.get('SeatsCount'))
-    return smallest
+    return min(data, key=lambda x: x.get('SeatsCount'))
 
 
 def get_closest_bar(data, longitude, latitude):
-    closest = data[0]
-    for bar in data[1:]:
-        closest = min(closest, bar, key=sort_bar_distance)
-    return closest
+    return min(data, key=sort_bar_distance)
 
 
 if __name__ == '__main__':
